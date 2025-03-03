@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrolled Members</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1>👥 Enrolled Members</h1>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+        </ul>
+    </nav>
+
+    <!-- Members Container -->
+    <div class="members-container">
+        <h2>👥 All Enrolled Members</h2>
+        <p>View all registered users and their ratings.</p>
+
+        <ul id="members-list" class="members-list">
+            <!-- Members will be loaded dynamically here -->
+        </ul>
+    </div>
+
+    <script src="../js/members.js"></script>
+
+</body>
+</html>

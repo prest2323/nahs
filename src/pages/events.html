@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAHS Events</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1>NAHS Events</h1>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="hours.html">Hours</a></li>
+            <li><a href="gallery.html">Art Gallery</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+        </ul>
+    </nav>
+
+    <!-- Events Page Content -->
+    <div class="events-container">
+        <h2>📅 Upcoming Events</h2>
+        
+        <!-- Current Date & Time Display -->
+        <h3 id="current-date-time"></h3>
+
+        <!-- Calendar -->
+        <div class="calendar">
+            <div class="calendar-header">
+                <button onclick="prevMonth()">◀</button>
+                <h3 id="calendar-month"></h3>
+                <button onclick="nextMonth()">▶</button>
+            </div>
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Days will be inserted dynamically -->
+            </div>
+        </div>
+
+        <h3>🗓 Event List</h3>
+        <ul id="event-list">
+            <!-- Dynamic Events Here -->
+        </ul>
+    </div>
+
+    <script src="../js/events.js"></script>
+</body>
+</html>

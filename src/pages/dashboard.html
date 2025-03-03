@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAHS Dashboard</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1>NAHS Dashboard</h1>
+        <ul>
+            <li><a href="admin.html" id="admin-panel-nav" style="display: none;">Admin Panel</a></li> <!-- Admin Panel Link -->
+            <li><a href="events.html">Events</a></li>
+            <li><a href="hours.html">Hours</a></li>
+            <li><a href="gallery.html">Art Gallery</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li>
+            <li><a href="members.html">Members</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+        </ul>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <h2>Welcome, <span id="username">User</span>!</h2>
+        <p>Explore the latest NAHS updates below.</p>
+
+        <!-- Announcements Section -->
+        <div class="announcement-card">
+            <h3>📢 Latest Announcements</h3>
+            <div class="announcement-list">
+                <p>🎨 Art Showcase this Friday!</p>
+                <p>⏳ Volunteer Hours Deadline: March 30</p>
+                <p>🏆 Leaderboard Winners Get Rewards</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Admin Panel Card (Only for Admins) -->
+            <div class="card" id="admin-panel-card" style="display: none;">
+                <h3>🔧 Admin Panel</h3>
+                <p>Full access to manage all NAHS operations.</p>
+                <button class="green-btn" onclick="window.location.href='admin.html'">Go to Admin Panel</button>
+            </div>
+
+            <div class="card">
+                <h3>📅 Upcoming Events</h3>
+                <p>Check out the latest NAHS events and volunteer opportunities.</p>
+                <button class="green-btn" onclick="window.location.href='events.html'">View Events</button>
+            </div>
+
+            <div class="card">
+                <h3>⏳ Hour Tracker</h3>
+                <p>Log your volunteer hours and stay on track.</p>
+                <button class="green-btn" onclick="window.location.href='hours.html'">Log Hours</button>
+            </div>
+
+            <div class="card">
+                <h3>🎨 Art Gallery</h3>
+                <p>Showcase your artwork in the NAHS digital gallery.</p>
+                <button class="green-btn" onclick="window.location.href='gallery.html'">View Gallery</button>
+            </div>
+
+            <div class="card">
+                <h3>👥 Enrolled Members</h3>
+                <p>See who else is part of NAHS.</p>
+                <button class="green-btn" onclick="window.location.href='members.html'">View Members</button>
+            </div>
+
+            <div class="card">
+                <h3>🏆 Leaderboard</h3>
+                <p>Top contributors ranked by volunteer hours.</p>
+                <button class="green-btn" onclick="window.location.href='leaderboard.html'">View Leaderboard</button>
+            </div>
+
+            <div class="card">
+                <h3>💰 Exchange Hours</h3>
+                <p>Use extra hours to claim rewards.</p>
+                <button class="green-btn" onclick="window.location.href='shop.html'">Go to Shop</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/dashboard.js"></script>
+
+</body>
+</html>

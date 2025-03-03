@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1>👤 My Profile</h1>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+        </ul>
+    </nav>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        <div class="profile-card">
+            <!-- Profile Picture -->
+            <div class="profile-picture">
+                <img id="profile-img" src="../img/default-avatar.png" alt="Profile Picture">
+            </div>
+            <input type="file" id="upload-profile-pic" accept="image/*" hidden>
+            <button class="upload-btn" onclick="document.getElementById('upload-profile-pic').click()">📷 Change Profile Picture</button>
+
+            <!-- User Info -->
+            <h2 id="profile-display-name">Display Name</h2>
+            <p class="profile-name"><strong>Name:</strong> <span id="profile-name"></span></p>
+            <p class="profile-role"><strong>Role:</strong> <span id="profile-role"></span></p>
+            <p class="profile-bio" id="profile-bio">No bio added.</p>
+
+            <!-- Edit Profile Button -->
+            <button class="green-btn" onclick="openEditModal()">✏️ Edit Profile</button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Profile</h2>
+
+            <!-- Editable Fields -->
+            <div class="edit-fields">
+                <label for="edit-display-name">Display Name:</label>
+                <input type="text" id="edit-display-name">
+
+                <label for="edit-first-name">First Name:</label>
+                <input type="text" id="edit-first-name">
+
+                <label for="edit-last-name">Last Name:</label>
+                <input type="text" id="edit-last-name">
+
+                <label for="edit-bio">Bio:</label>
+                <input type="text" id="edit-bio">
+            </div>
+
+            <!-- Modal Buttons -->
+            <div class="modal-buttons">
+                <button class="green-btn" onclick="saveProfileChanges()">Save Changes</button>
+                <button class="close-btn" onclick="closeEditModal()">Exit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/profile.js"></script>
+
+</body>
+</html>

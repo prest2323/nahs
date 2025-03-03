@@ -1,0 +1,28 @@
+# 🚀 Node.js Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# 🚀 Environment Variables
+.env
+
+# 🚀 Editor & System Files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# 🚀 Build & Cache Files
+dist/
+out/
+.cache/
+.tmp/
+
+# 🚀 Logs & Database Files
+logs/
+*.log
+*.sqlite
+*.sqlite3
+
+# 🚀 Live Server & Debugging
+.live-server.json

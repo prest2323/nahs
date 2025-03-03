@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Center</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1>Admin Center</h1>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+        </ul>
+    </nav>
+
+    <div class="admin-container">
+        <h2>🔧 Manage NAHS</h2>
+        <button class="green-btn" onclick="window.location.href='manage-events.html'">Manage Events</button>
+        <button class="green-btn" onclick="window.location.href='manage-hours.html'">Manage Hours</button>
+        <button class="green-btn" onclick="window.location.href='edit-announcements.html'">Edit Announcements</button>
+    </div>
+
+    <script src="../js/dashboard.js"></script>
+
+</body>
+</html>
