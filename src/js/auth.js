@@ -37,13 +37,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 email,
                 password,
                 role,
-                profilePic: "../img/default-avatar.png", // Default profile picture
+                // Use an absolute path so the image loads correctly regardless of current page
+                profilePic: "/img/default-avatar.png",
                 displayName: firstName // Default display name to first name
             };
 
             localStorage.setItem(`user_${email}`, JSON.stringify(userData));
             alert("Account created successfully! Please log in.");
-            window.location.href = "login.html";
+            // Redirect using an absolute path to the login page
+            window.location.href = "/pages/login.html";
         });
     }
 
@@ -69,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     userData.role = ADMIN_ACCOUNTS.includes(email) ? "admin" : "member";
                     localStorage.setItem("loggedInUser", JSON.stringify(userData));
 
-                    window.location.href = "dashboard.html";
+                    window.location.href = "/pages/dashboard.html";
                 } else {
                     alert("Incorrect password.");
                 }
@@ -82,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Handle Logout
     window.logout = function () {
         localStorage.removeItem("loggedInUser");
-        window.location.href = "login.html";
+        window.location.href = "/pages/login.html";
     };
 
     // Ensure Logged-In User is Displayed

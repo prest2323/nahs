@@ -2,33 +2,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const membersList = document.getElementById("members-list");
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
 
+    // Redirect to login if there's no logged-in user
     if (!loggedInUser) {
-        window.location.href = "login.html"; // Redirect if not logged in
+        window.location.href = "/pages/login.html";
         return;
     }
 
+    // Function to load and display members
     function loadMembers() {
         membersList.innerHTML = "";
 
         let foundUsers = false;
         const defaultProfilePic = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
+        // Iterate over keys in localStorage to find user accounts
         Object.keys(localStorage).forEach((key) => {
-            if (key.includes("@")) { // Ensure it's a user account
+            // A basic check to ensure the key might be an email address
+            if (key.includes("@")) {
                 const userData = JSON.parse(localStorage.getItem(key));
-
                 if (userData) {
                     foundUsers = true;
 
-                    // Get Profile Picture & Display Name
+                    // Determine profile picture and display name
                     const profilePic = userData.profilePic || defaultProfilePic;
                     const displayName = userData.displayName || userData.firstName;
 
-                    // Get Stars & Lightning (Ensure 0-5 range)
+                    // Retrieve stars and lightning ratings (limited to 0-5)
                     let stars = Math.min(5, Math.max(0, parseInt(localStorage.getItem(`stars_${userData.email}`) || "0")));
                     let lightning = Math.min(5, Math.max(0, parseInt(localStorage.getItem(`lightning_${userData.email}`) || "0")));
 
-                    // Create Member Item
+                    // Create member item HTML
                     const memberItem = document.createElement("div");
                     memberItem.classList.add("member-item");
                     memberItem.innerHTML = `
@@ -72,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Adjust Stars (Admin Only)
 window.adjustStars = function(email, change) {
     let stars = parseInt(localStorage.getItem(`stars_${email}`) || "0");
-    stars = Math.min(5, Math.max(0, stars + change)); // Limit between 0 and 5
+    stars = Math.min(5, Math.max(0, stars + change)); // Ensure stars stays between 0 and 5
     localStorage.setItem(`stars_${email}`, stars);
     updateMemberUI(email);
 };
@@ -80,12 +83,12 @@ window.adjustStars = function(email, change) {
 // Adjust Lightning (Admin Only)
 window.adjustLightning = function(email, change) {
     let lightning = parseInt(localStorage.getItem(`lightning_${email}`) || "0");
-    lightning = Math.min(5, Math.max(0, lightning + change)); // Limit between 0 and 5
+    lightning = Math.min(5, Math.max(0, lightning + change)); // Ensure lightning stays between 0 and 5
     localStorage.setItem(`lightning_${email}`, lightning);
     updateMemberUI(email);
 };
 
-// Live Update Function
+// Live Update Function to refresh member data on the page
 function updateMemberUI(email) {
     const defaultProfilePic = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
     const userData = JSON.parse(localStorage.getItem(email));

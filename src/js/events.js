@@ -1,13 +1,20 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Grab the necessary elements from the DOM
     const calendarGrid = document.getElementById("calendar-grid");
     const calendarMonth = document.getElementById("calendar-month");
     const eventList = document.getElementById("event-list");
     const currentDateTime = document.getElementById("current-date-time");
 
+    // Check that essential elements exist
+    if (!calendarGrid || !calendarMonth || !eventList || !currentDateTime) {
+        console.error("One or more calendar elements not found in the DOM.");
+        return;
+    }
+
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
-    let today = new Date().getDate();
 
+    // Function to update the current date and time display
     function updateDateTime() {
         const now = new Date();
         currentDateTime.textContent = now.toLocaleString("en-US", {
@@ -22,16 +29,20 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Function to render the calendar for a given month and year
     function renderCalendar(month, year) {
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const todayDate = new Date().getDate();
         const todayMonth = new Date().getMonth();
         const todayYear = new Date().getFullYear();
 
+        // Display the current month and year
         calendarMonth.textContent = new Date(year, month).toLocaleString("default", { month: "long", year: "numeric" });
 
-        calendarGrid.innerHTML = ""; // Clear previous days
+        // Clear previous days
+        calendarGrid.innerHTML = "";
 
+        // Create and append day elements
         for (let day = 1; day <= daysInMonth; day++) {
             const dayElement = document.createElement("div");
             dayElement.classList.add("calendar-day");
@@ -46,16 +57,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Function to load events into the event list
     function loadEvents() {
-        eventList.innerHTML = ""; // Clear list
+        // Clear the event list
+        eventList.innerHTML = "";
 
+        // Predefined events array
         const events = [
             { name: "🎨 Art Workshop", date: "March 5, 2025", time: "2:00 PM" },
             { name: "🖌 Mural Painting", date: "March 10, 2025", time: "3:30 PM" },
             { name: "💡 Volunteer Fair", date: "March 15, 2025", time: "10:00 AM" }
         ];
 
-        // Add a recurring meeting every Thursday
+        // Add a recurring meeting every Thursday over the next 30 days
         let date = new Date();
         for (let i = 0; i < 30; i++) {
             date.setDate(date.getDate() + 1);
@@ -64,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
+        // Render each event as a list item
         events.forEach(event => {
             const listItem = document.createElement("li");
             listItem.innerHTML = `<strong>${event.name}</strong> – ${event.date} | ${event.time}`;
@@ -71,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Expose functions to navigate between months
     window.prevMonth = function() {
         currentMonth--;
         if (currentMonth < 0) {
@@ -89,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
         renderCalendar(currentMonth, currentYear);
     };
 
+    // Initialize calendar and events, and update the date/time display every second
     updateDateTime();
     renderCalendar(currentMonth, currentYear);
     loadEvents();

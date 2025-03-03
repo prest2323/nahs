@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
 
+    // Redirect to login page if no user is logged in
     if (!loggedInUser) {
-        window.location.href = "login.html"; // Redirect if not logged in
+        window.location.href = "/pages/login.html";
         return;
     }
 
     const defaultProfilePic = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
-    // Load Profile Info
+    // Load profile info into the page elements
     document.getElementById("profile-display-name").textContent = loggedInUser.displayName || "No Display Name";
     document.getElementById("profile-name").textContent = `${loggedInUser.firstName} ${loggedInUser.lastName}`;
     document.getElementById("profile-role").textContent = loggedInUser.role === "admin" ? "👑 Administrator" : "👤 Member";
@@ -21,11 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
+                // Update the profile image preview
                 document.getElementById("profile-img").src = e.target.result;
+                // Save the new profile picture to loggedInUser object and localStorage
                 loggedInUser.profilePic = e.target.result;
                 localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
                 localStorage.setItem(loggedInUser.email, JSON.stringify(loggedInUser));
-                updateMembersList(); // Update member list
+                updateMembersList(); // Reflect changes in member list
             };
             reader.readAsDataURL(file);
         }
@@ -40,12 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("edit-bio").value = loggedInUser.bio || "";
     };
 
-    // Close Modal
+    // Close the Edit Profile Modal
     window.closeEditModal = function () {
         document.getElementById("edit-profile-modal").style.display = "none";
     };
 
-    // Save Profile Changes
+    // Save Profile Changes and update localStorage and UI
     window.saveProfileChanges = function () {
         loggedInUser.displayName = document.getElementById("edit-display-name").value.trim();
         loggedInUser.firstName = document.getElementById("edit-first-name").value.trim();
@@ -55,16 +58,16 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
         localStorage.setItem(loggedInUser.email, JSON.stringify(loggedInUser));
 
-        // Update UI
+        // Update the profile info on the page
         document.getElementById("profile-display-name").textContent = loggedInUser.displayName || "No Display Name";
         document.getElementById("profile-name").textContent = `${loggedInUser.firstName} ${loggedInUser.lastName}`;
         document.getElementById("profile-bio").textContent = loggedInUser.bio || "No bio added.";
 
-        updateMembersList(); // Reflect changes in members list
+        updateMembersList(); // Reflect changes in members list (if displayed)
         closeEditModal();
     };
 
-    // Function to update member list live when profile updates
+    // Function to update member list entries live when profile changes
     function updateMembersList() {
         const profilePic = loggedInUser.profilePic || defaultProfilePic;
         document.querySelectorAll(".member-pic").forEach(img => {
