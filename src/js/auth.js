@@ -1,99 +1,76 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const signupForm = document.getElementById("signupForm");
-    const loginForm = document.getElementById("loginForm");
+    // Azure AD B2C configuration using MSAL.js
+    const msalConfig = {
+        auth: {
+            clientId: "837001ce-1fa7-4e43-ab3d-412cd40aab76", // Replace with your Azure AD B2C Application (client) ID
+            authority: "https://your-b2c-tenant.b2clogin.com/your-b2c-tenant.onmicrosoft.com/B2C_1_signupsignin", // Replace with your B2C sign-up/sign-in policy
+            knownAuthorities: ["your-b2c-tenant.b2clogin.com"],
+            redirectUri: window.location.origin // Or your specific redirect URI
+        },
+        cache: {
+            cacheLocation: "localStorage", // This keeps the cache persistent across sessions
+            storeAuthStateInCookie: false
+        }
+    };
 
-    // Predefined Admin Accounts (Including Your Email)
-    const ADMIN_ACCOUNTS = [
-        "prestonlukensgames@gmail.com",
-        "admin1@example.com",
-        "admin2@example.com"
-    ];
+    // Initialize MSAL instance
+    const msalInstance = new msal.PublicClientApplication(msalConfig);
 
-    // Handle Signup
-    if (signupForm) {
-        signupForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            
-            const firstName = document.getElementById("first-name").value.trim();
-            const lastName = document.getElementById("last-name").value.trim();
-            const email = document.getElementById("signup-email").value.trim().toLowerCase();
-            const password = document.getElementById("signup-password").value;
+    // Request object for login/sign-up flows
+    const authRequest = {
+        scopes: ["openid", "profile"]
+    };
 
-            if (!firstName || !lastName || !email || !password) {
-                alert("Please fill out all fields.");
-                return;
-            }
+    // Get UI elements for login and signup (ensure your HTML has these elements, e.g., buttons)
+    const loginButton = document.getElementById("loginButton");
+    const signupButton = document.getElementById("signupButton");
 
-            if (localStorage.getItem(`user_${email}`)) {
-                alert("An account with this email already exists.");
-                return;
-            }
-
-            const role = ADMIN_ACCOUNTS.includes(email) ? "admin" : "member";
-
-            const userData = {
-                firstName,
-                lastName,
-                email,
-                password,
-                role,
-                // Use an absolute path so the image loads correctly regardless of current page
-                profilePic: "/img/default-avatar.png",
-                displayName: firstName // Default display name to first name
-            };
-
-            localStorage.setItem(`user_${email}`, JSON.stringify(userData));
-            alert("Account created successfully! Please log in.");
-            // Redirect using an absolute path to the login page
-            window.location.href = "/pages/login.html";
+    // Handle Login
+    if (loginButton) {
+        loginButton.addEventListener("click", () => {
+            msalInstance.loginPopup(authRequest)
+                .then((loginResponse) => {
+                    console.log("Login successful:", loginResponse);
+                    // On successful login, redirect to dashboard or desired page.
+                    window.location.href = "/pages/dashboard.html";
+                })
+                .catch((error) => {
+                    console.error("Login error:", error);
+                    alert("Login failed. Please try again.");
+                });
         });
     }
 
-    // Handle Login
-    if (loginForm) {
-        loginForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            const email = document.getElementById("login-email").value.trim().toLowerCase();
-            const password = document.getElementById("login-password").value;
-
-            if (!email || !password) {
-                alert("Please enter your email and password.");
-                return;
-            }
-
-            const storedUser = localStorage.getItem(`user_${email}`);
-            if (storedUser) {
-                const userData = JSON.parse(storedUser);
-                
-                if (userData.password === password) {
-                    // Ensure admin role is correctly set
-                    userData.role = ADMIN_ACCOUNTS.includes(email) ? "admin" : "member";
-                    localStorage.setItem("loggedInUser", JSON.stringify(userData));
-
+    // Handle Sign-up (this example uses the same sign-up/sign-in policy)
+    if (signupButton) {
+        signupButton.addEventListener("click", () => {
+            msalInstance.loginPopup(authRequest)
+                .then((response) => {
+                    console.log("Sign-up/Login successful:", response);
+                    // After sign-up, you are also logged in. Redirect to dashboard.
                     window.location.href = "/pages/dashboard.html";
-                } else {
-                    alert("Incorrect password.");
-                }
-            } else {
-                alert("Account not found. Please sign up first.");
-            }
+                })
+                .catch((error) => {
+                    console.error("Sign-up error:", error);
+                    alert("Sign-up failed. Please try again.");
+                });
         });
     }
 
     // Handle Logout
     window.logout = function () {
-        localStorage.removeItem("loggedInUser");
-        window.location.href = "/pages/login.html";
+        msalInstance.logout();
     };
 
-    // Ensure Logged-In User is Displayed
+    // Display Logged-In User
     function displayLoggedInUser() {
-        const userInfo = document.getElementById("username");
-        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-
-        if (loggedInUser && userInfo) {
-            userInfo.textContent = loggedInUser.firstName;
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts && accounts.length > 0) {
+            const usernameElem = document.getElementById("username");
+            if (usernameElem) {
+                // Display the user's name from the account info
+                usernameElem.textContent = accounts[0].name;
+            }
         }
     }
 
