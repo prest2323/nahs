@@ -3,8 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Determine the redirect URI based on environment:
     const redirectUri = window.location.hostname === "localhost"
         ? "http://localhost:3000/auth/callback"
-        : "https://nahstempleton-dkdufadccvhne6br.westus2-01.azurewebsites.net/auth/callback"; // Replace with your production URL
-
+        : "https://nahstempleton-dkdufadccvhne6br.westus2-01.azurewebsites.net/auth/redirect"; // Replace with your production URL
     // MSAL.js configuration for Managed Azure AD B2C
     const msalConfig = {
         auth: {
