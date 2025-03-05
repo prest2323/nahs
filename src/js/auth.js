@@ -2,13 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Determine the redirect URI based on environment:
     const redirectUri = window.location.hostname === "localhost"
         ? "http://localhost:3000/auth/callback"
-        : "https://nahstempleton-dkdufadccvhne6br.westus2-01.azurewebsites.net/auth/redirect"; // Replace with your production URL if needed
+        : "https://nahstempleton-dkdufadccvhne6br.westus2-01.azurewebsites.net/auth/redirect"; // Update if needed
 
     // MSAL.js configuration for Managed Azure AD B2C
     const msalConfig = {
         auth: {
             clientId: "b7a36819-669e-4e93-aced-c649a19194ae", // Your B2C Application (client) ID
-            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_SignUpSignIn", 
+            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_SignUpSignIn",
             knownAuthorities: ["nahstempleton.b2clogin.com"],
             redirectUri: redirectUri // Dynamically determined redirect URI
         },
@@ -20,9 +20,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initialize the MSAL instance
     const msalInstance = new msal.PublicClientApplication(msalConfig);
-
     // Expose the MSAL instance globally so other scripts can access it.
     window.msalInstance = msalInstance;
+
+    // Check if the URL hash contains the password reset error code (AADB2C90118)
+    const hash = window.location.hash;
+    if (hash && hash.indexOf("AADB2C90118") > -1) {
+        console.log("Detected password reset error in URL hash. Initiating password reset flow.");
+        msalInstance.loginPopup({
+            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_PasswordReset",
+            scopes: ["openid", "profile"]
+        })
+        .then((resetResponse) => {
+            console.log("Password reset successful:", resetResponse);
+            window.location.href = "/pages/dashboard.html";
+        })
+        .catch((resetError) => {
+            console.error("Password reset error:", resetError);
+            alert("Password reset failed. Please try again.");
+        });
+    }
 
     // Handle Logout using redirect-based logout (recommended for SPAs)
     window.logout = function () {
@@ -40,23 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginButton = document.getElementById("loginButton");
     const signupButton = document.getElementById("signupButton");
 
-    // Function to handle password reset flow when error AADB2C90118 is returned
-    function handlePasswordReset() {
-        console.log("Password reset requested");
-        msalInstance.loginPopup({
-            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_PasswordReset",
-            scopes: ["openid", "profile"]
-        })
-        .then((resetResponse) => {
-            console.log("Password reset successful:", resetResponse);
-            window.location.href = "/pages/dashboard.html";
-        })
-        .catch((resetError) => {
-            console.error("Password reset error:", resetError);
-            alert("Password reset failed. Please try again.");
-        });
-    }
-
     // Handle Login (opens a popup for the sign-in/up flow)
     if (loginButton) {
         loginButton.addEventListener("click", () => {
@@ -69,7 +69,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.error("Login error:", error);
                     // If the error indicates a password reset is requested...
                     if (error.errorMessage && error.errorMessage.indexOf("AADB2C90118") > -1) {
-                        handlePasswordReset();
+                        console.log("Password reset requested during login");
+                        msalInstance.loginPopup({
+                            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_PasswordReset",
+                            scopes: ["openid", "profile"]
+                        })
+                        .then((resetResponse) => {
+                            console.log("Password reset successful:", resetResponse);
+                            window.location.href = "/pages/dashboard.html";
+                        })
+                        .catch((resetError) => {
+                            console.error("Password reset error:", resetError);
+                            alert("Password reset failed. Please try again.");
+                        });
                     } else {
                         alert("Login failed. Please try again.");
                     }
@@ -87,8 +99,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .catch((error) => {
                     console.error("Sign-up error:", error);
+                    // Check if the error indicates a password reset request
                     if (error.errorMessage && error.errorMessage.indexOf("AADB2C90118") > -1) {
-                        handlePasswordReset();
+                        console.log("Password reset requested during sign-up");
+                        msalInstance.loginPopup({
+                            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_PasswordReset",
+                            scopes: ["openid", "profile"]
+                        })
+                        .then((resetResponse) => {
+                            console.log("Password reset successful:", resetResponse);
+                            window.location.href = "/pages/dashboard.html";
+                        })
+                        .catch((resetError) => {
+                            console.error("Password reset error:", resetError);
+                            alert("Password reset failed. Please try again.");
+                        });
                     } else {
                         alert("Sign-up failed. Please try again.");
                     }
