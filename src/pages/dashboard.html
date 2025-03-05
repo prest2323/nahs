@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAHS Dashboard</title>
-    <link rel="stylesheet" href="../css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAHS Dashboard</title>
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
 
@@ -12,7 +12,7 @@
     <nav class="navbar">
         <h1>NAHS Dashboard</h1>
         <ul>
-            <li><a href="admin.html" id="admin-panel-nav" style="display: none;">Admin Panel</a></li> <!-- Admin Panel Link -->
+            <li><a href="admin.html" id="admin-panel-nav" style="display: none;">Admin Panel</a></li>
             <li><a href="events.html">Events</a></li>
             <li><a href="hours.html">Hours</a></li>
             <li><a href="gallery.html">Art Gallery</a></li>
@@ -86,6 +86,9 @@
         </div>
     </div>
 
+    <!-- Include auth.js first to ensure msalInstance is globally available -->
+    <script src="../js/auth.js"></script>
+    <!-- Then include dashboard.js which uses msalInstance -->
     <script src="../js/dashboard.js"></script>
 
 </body>
