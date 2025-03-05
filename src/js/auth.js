@@ -1,9 +1,9 @@
-
 document.addEventListener("DOMContentLoaded", () => {
     // Determine the redirect URI based on environment:
     const redirectUri = window.location.hostname === "localhost"
         ? "http://localhost:3000/auth/callback"
-        : "https://nahstempleton-dkdufadccvhne6br.westus2-01.azurewebsites.net/auth/redirect"; // Replace with your production URL
+        : "https://nahstempleton-dkdufadccvhne6br.westus2-01.azurewebsites.net/auth/redirect"; // Replace with your production URL if needed
+
     // MSAL.js configuration for Managed Azure AD B2C
     const msalConfig = {
         auth: {
@@ -26,7 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle Logout using redirect-based logout (recommended for SPAs)
     window.logout = function () {
-        msalInstance.logoutRedirect();
+        msalInstance.logoutRedirect({
+            postLogoutRedirectUri: window.location.origin + "/pages/login.html"
+        });
     };
 
     // Request object for login/sign-up flows
@@ -38,6 +40,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginButton = document.getElementById("loginButton");
     const signupButton = document.getElementById("signupButton");
 
+    // Function to handle password reset flow when error AADB2C90118 is returned
+    function handlePasswordReset() {
+        console.log("Password reset requested");
+        msalInstance.loginPopup({
+            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_PasswordReset",
+            scopes: ["openid", "profile"]
+        })
+        .then((resetResponse) => {
+            console.log("Password reset successful:", resetResponse);
+            window.location.href = "/pages/dashboard.html";
+        })
+        .catch((resetError) => {
+            console.error("Password reset error:", resetError);
+            alert("Password reset failed. Please try again.");
+        });
+    }
+
     // Handle Login (opens a popup for the sign-in/up flow)
     if (loginButton) {
         loginButton.addEventListener("click", () => {
@@ -48,7 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .catch((error) => {
                     console.error("Login error:", error);
-                    alert("Login failed. Please try again.");
+                    // If the error indicates a password reset is requested...
+                    if (error.errorMessage && error.errorMessage.indexOf("AADB2C90118") > -1) {
+                        handlePasswordReset();
+                    } else {
+                        alert("Login failed. Please try again.");
+                    }
                 });
         });
     }
@@ -63,7 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .catch((error) => {
                     console.error("Sign-up error:", error);
-                    alert("Sign-up failed. Please try again.");
+                    if (error.errorMessage && error.errorMessage.indexOf("AADB2C90118") > -1) {
+                        handlePasswordReset();
+                    } else {
+                        alert("Sign-up failed. Please try again.");
+                    }
                 });
         });
     }
