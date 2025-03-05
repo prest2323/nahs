@@ -1,36 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="../css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-
-    <div class="login-container">
-        <div class="login-card">
-            <h2>🎨 NAHS Login</h2>
-            <form id="loginForm">
-                <div class="input-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required>
-                </div>
-
-                <button type="submit" class="login-btn">Login</button>
-                <p class="extra-links">
-                    <a href="signup.html">Create an Account</a>
-                </p>
-            </form>
-        </div>
+  <div class="login-container">
+    <div class="login-card">
+      <h2>🎨 NAHS Login</h2>
+      <button id="loginButton" class="login-btn">Login with Azure AD B2C</button>
+      <p class="extra-links">
+        <a href="signup.html">Create an Account</a>
+      </p>
     </div>
-
-    <script src="../js/auth.js"></script>
-
+  </div>
+  <script src="https://alcdn.msauth.net/browser/2.19.0/js/msal-browser.min.js"></script>
+  <script src="../js/auth.js"></script>
 </body>
 </html>

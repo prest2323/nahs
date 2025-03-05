@@ -1,46 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="../css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-
-    <div class="login-container">
-        <div class="login-card">
-            <h2>🖌 Create Account</h2>
-            <form id="signupForm">
-                <div class="input-group">
-                    <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" required>
-                </div>
-
-                <button type="submit" class="login-btn">Sign Up</button>
-                <p class="extra-links">
-                    Already have an account? <a href="/pages/login.html">Login</a>
-                </p>
-            </form>
-        </div>
+  <div class="login-container">
+    <div class="login-card">
+      <h2>🖌 Create Account</h2>
+      <!-- Sign-up is handled by Azure AD B2C. Click this button to start the sign-up flow -->
+      <button id="signupButton" class="login-btn">Sign Up with Azure AD B2C</button>
+      <p class="extra-links">
+        Already have an account? <a href="/pages/login.html">Login</a>
+      </p>
     </div>
-
-    <script src="../js/auth.js"></script>
-
+  </div>
+  <!-- Include the MSAL.js library -->
+  <script src="https://alcdn.msauth.net/browser/2.19.0/js/msal-browser.min.js"></script>
+  <script src="../js/auth.js"></script>
 </body>
 </html>

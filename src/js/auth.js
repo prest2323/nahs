@@ -1,37 +1,50 @@
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Azure AD B2C configuration using MSAL.js
+    // Determine the redirect URI based on environment:
+    const redirectUri = window.location.hostname === "localhost"
+        ? "http://localhost:3000/auth/callback"
+        : "https://nahstempleton-dkdufadccvhne6br.westus2-01.azurewebsites.net/auth/callback"; // Replace with your production URL
+
+    // MSAL.js configuration for Managed Azure AD B2C
     const msalConfig = {
         auth: {
-            clientId: "837001ce-1fa7-4e43-ab3d-412cd40aab76", // Replace with your Azure AD B2C Application (client) ID
-            authority: "https://your-b2c-tenant.b2clogin.com/your-b2c-tenant.onmicrosoft.com/B2C_1_signupsignin", // Replace with your B2C sign-up/sign-in policy
-            knownAuthorities: ["your-b2c-tenant.b2clogin.com"],
-            redirectUri: window.location.origin // Or your specific redirect URI
+            clientId: "b7a36819-669e-4e93-aced-c649a19194ae", // Your B2C Application (client) ID
+            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_SignUpSignIn", 
+            knownAuthorities: ["nahstempleton.b2clogin.com"],
+            redirectUri: redirectUri // Dynamically determined redirect URI
         },
         cache: {
-            cacheLocation: "localStorage", // This keeps the cache persistent across sessions
+            cacheLocation: "localStorage",
             storeAuthStateInCookie: false
         }
     };
 
-    // Initialize MSAL instance
+    // Initialize the MSAL instance
     const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+    // Expose the MSAL instance globally so other scripts can access it.
+    window.msalInstance = msalInstance;
+
+    // Handle Logout using redirect-based logout (recommended for SPAs)
+    window.logout = function () {
+        msalInstance.logoutRedirect();
+    };
 
     // Request object for login/sign-up flows
     const authRequest = {
         scopes: ["openid", "profile"]
     };
 
-    // Get UI elements for login and signup (ensure your HTML has these elements, e.g., buttons)
+    // Get references to UI elements (ensure these buttons exist in your HTML)
     const loginButton = document.getElementById("loginButton");
     const signupButton = document.getElementById("signupButton");
 
-    // Handle Login
+    // Handle Login (opens a popup for the sign-in/up flow)
     if (loginButton) {
         loginButton.addEventListener("click", () => {
             msalInstance.loginPopup(authRequest)
                 .then((loginResponse) => {
                     console.log("Login successful:", loginResponse);
-                    // On successful login, redirect to dashboard or desired page.
                     window.location.href = "/pages/dashboard.html";
                 })
                 .catch((error) => {
@@ -41,13 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Handle Sign-up (this example uses the same sign-up/sign-in policy)
+    // Handle Sign-up (using the same policy as login)
     if (signupButton) {
         signupButton.addEventListener("click", () => {
             msalInstance.loginPopup(authRequest)
                 .then((response) => {
-                    console.log("Sign-up/Login successful:", response);
-                    // After sign-up, you are also logged in. Redirect to dashboard.
+                    console.log("Sign-up/Sign-in successful:", response);
                     window.location.href = "/pages/dashboard.html";
                 })
                 .catch((error) => {
@@ -56,23 +68,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
         });
     }
-
-    // Handle Logout
-    window.logout = function () {
-        msalInstance.logout();
-    };
-
-    // Display Logged-In User
+    
+    // (Optional) Display the logged-in user's display name
     function displayLoggedInUser() {
         const accounts = msalInstance.getAllAccounts();
-        if (accounts && accounts.length > 0) {
-            const usernameElem = document.getElementById("username");
-            if (usernameElem) {
-                // Display the user's name from the account info
-                usernameElem.textContent = accounts[0].name;
-            }
+        const usernameElement = document.getElementById("username");
+        if (accounts && accounts.length > 0 && usernameElement) {
+            usernameElement.textContent = accounts[0].name || "User";
         }
     }
-
+    
     displayLoggedInUser();
 });
