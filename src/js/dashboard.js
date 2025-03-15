@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     // Expose a global logout function with debug logging.
-    window.logout = function () {
-        console.log("Logout clicked");
-        window.location.href = "/pages/login.html";
-    };
+        // window.logout = function () {
+        //     console.log("Logout clicked");
+        //     window.location.href = "/pages/login.html";
+        // };
 });

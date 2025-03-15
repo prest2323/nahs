@@ -8,6 +8,12 @@
 </head>
 <body>
 
+<script src="https://alcdn.msauth.net/browser/2.19.0/js/msal-browser.min.js"></script>
+<!-- Include auth.js first to ensure msalInstance is globally available -->
+<script src="../js/auth.js"></script>
+<!-- Then include dashboard.js which uses msalInstance -->
+<script src="../js/dashboard.js"></script>
+
     <!-- Navigation Bar -->
     <nav class="navbar">
         <h1>NAHS Dashboard</h1>
@@ -85,11 +91,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Include auth.js first to ensure msalInstance is globally available -->
-    <script src="../js/auth.js"></script>
-    <!-- Then include dashboard.js which uses msalInstance -->
-    <script src="../js/dashboard.js"></script>
-
 </body>
 </html>

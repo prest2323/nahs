@@ -48,25 +48,24 @@ body {
 }
 
 .logout-btn {
-    background: white;
-    color: #1B5E20;
-    border: 2px solid #1B5E20;
+    background: transparent; /* or #1B5E20 if you want it solid green */
+    color: white;
+    border: 2px solid white; /* change border color if desired */
     padding: 8px 15px;
     cursor: pointer;
     font-weight: bold;
     border-radius: 5px;
     transition: 0.3s;
-    margin-left: 20px; /* Add spacing to separate from links */
-    height: 40px; /* Ensure consistent height with nav items */
+    margin-left: 20px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-
 .logout-btn:hover {
-    background: #1B5E20;
-    color: white;
+    background: white;
+    color: #1B5E20;
 }
 
 /* ==== Forms (Login, Signup, Forgot Password) ==== */

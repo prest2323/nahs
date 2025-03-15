@@ -26,9 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle Logout using redirect-based logout (recommended for SPAs)
     window.logout = function () {
-        msalInstance.logoutRedirect({
-            postLogoutRedirectUri: window.location.origin + "/pages/login.html"
-        });
+        console.log("Logout function called");
+        //alert("Logout function called"); // Temporary alert for debugging
+        if (msalInstance && msalInstance.logoutRedirect) {
+            msalInstance.logoutRedirect({
+                postLogoutRedirectUri: window.location.origin + "/pages/login.html"
+            }).catch((error) => {
+                console.error("Logout error:", error);
+            });
+        } else {
+            console.error("msalInstance or logoutRedirect not available. Redirecting to login.");
+            window.location.href = window.location.origin + "/pages/login.html";
+        }
     };
 
     // Request object for login/sign-up flows
