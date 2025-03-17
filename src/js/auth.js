@@ -1,126 +1,90 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Determine the redirect URI based on environment:
-    const redirectUri = window.location.hostname === "localhost"
-        ? "http://localhost:3000/auth/callback"
-        : "https://nahstempleton-dkdufadccvhne6br.westus2-01.azurewebsites.net/auth/redirect"; // Replace with your production URL
+document.addEventListener("DOMContentLoaded", async () => {
+    console.log("🔍 Auth script loaded...");
 
-    // MSAL.js configuration for Managed Azure AD B2C
-    const msalConfig = {
-        auth: {
-            clientId: "b7a36819-669e-4e93-aced-c649a19194ae", // Your B2C Application (client) ID
-            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_SignUpSignIn", 
-            knownAuthorities: ["nahstempleton.b2clogin.com"],
-            redirectUri: redirectUri // Dynamically determined redirect URI
-        },
-        cache: {
-            cacheLocation: "localStorage",
-            storeAuthStateInCookie: false
-        }
-    };
-
-    // Initialize the MSAL instance
-    const msalInstance = new msal.PublicClientApplication(msalConfig);
-
-    // Expose the MSAL instance globally so other scripts can access it.
-    window.msalInstance = msalInstance;
-
-    // Handle Logout using redirect-based logout (recommended for SPAs)
-    window.logout = function () {
-        console.log("Logout function called");
-        //alert("Logout function called"); // Temporary alert for debugging
-        if (msalInstance && msalInstance.logoutRedirect) {
-            msalInstance.logoutRedirect({
-                postLogoutRedirectUri: window.location.origin + "/pages/login.html"
-            }).catch((error) => {
-                console.error("Logout error:", error);
-            });
-        } else {
-            console.error("msalInstance or logoutRedirect not available. Redirecting to login.");
-            window.location.href = window.location.origin + "/pages/login.html";
-        }
-    };
-
-    // Request object for login/sign-up flows
-    const authRequest = {
-        scopes: ["openid", "profile"]
-    };
-
-    // Get references to UI elements (ensure these buttons exist in your HTML)
     const loginButton = document.getElementById("loginButton");
-    const signupButton = document.getElementById("signupButton");
+    const logoutButton = document.getElementById("logoutButton");
 
-    // Handle Login (opens a popup for the sign-in/up flow)
+    // Redirect to Google Sign-In
     if (loginButton) {
         loginButton.addEventListener("click", () => {
-            msalInstance.loginPopup(authRequest)
-                .then((loginResponse) => {
-                    console.log("Login successful:", loginResponse);
-                    window.location.href = "/pages/dashboard.html";
-                })
-                .catch((error) => {
-                    console.error("Login error:", error);
-                    // If the error indicates a password reset is requested...
-                    if (error.errorMessage && error.errorMessage.indexOf("AADB2C90118") > -1) {
-                        console.log("Password reset requested");
-                        msalInstance.loginPopup({
-                            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_PasswordReset",
-                            scopes: ["openid", "profile"]
-                        })
-                        .then((resetResponse) => {
-                            console.log("Password reset successful:", resetResponse);
-                            window.location.href = "/pages/dashboard.html";
-                        })
-                        .catch((resetError) => {
-                            console.error("Password reset error:", resetError);
-                            alert("Password reset failed. Please try again.");
-                        });
-                    } else {
-                        alert("Login failed. Please try again.");
-                    }
-                });
+            console.log("🔗 Redirecting to Google Sign-In...");
+            window.location.href = "http://localhost:3000/auth/google";
         });
     }
 
-    // Handle Sign-up (using the same policy as login)
-    if (signupButton) {
-        signupButton.addEventListener("click", () => {
-            msalInstance.loginPopup(authRequest)
-                .then((response) => {
-                    console.log("Sign-up/Sign-in successful:", response);
-                    window.location.href = "/pages/dashboard.html";
-                })
-                .catch((error) => {
-                    console.error("Sign-up error:", error);
-                    // Check if the error indicates a password reset request
-                    if (error.errorMessage && error.errorMessage.indexOf("AADB2C90118") > -1) {
-                        console.log("Password reset requested");
-                        msalInstance.loginPopup({
-                            authority: "https://nahstempleton.b2clogin.com/nahstempleton.onmicrosoft.com/B2C_1_PasswordReset",
-                            scopes: ["openid", "profile"]
-                        })
-                        .then((resetResponse) => {
-                            console.log("Password reset successful:", resetResponse);
-                            window.location.href = "/pages/dashboard.html";
-                        })
-                        .catch((resetError) => {
-                            console.error("Password reset error:", resetError);
-                            alert("Password reset failed. Please try again.");
-                        });
-                    } else {
-                        alert("Sign-up failed. Please try again.");
-                    }
-                });
+    // Logout function
+    if (logoutButton) {
+        logoutButton.addEventListener("click", () => {
+            console.log("🚪 Logging out...");
+            localStorage.removeItem("user"); // Remove user data from local storage
+            window.location.href = "http://localhost:3000/logout"; // Logout route
         });
     }
-    
-    // (Optional) Display the logged-in user's display name
-    function displayLoggedInUser() {
-        const accounts = msalInstance.getAllAccounts();
-        const usernameElement = document.getElementById("username");
-        if (accounts && accounts.length > 0 && usernameElement) {
-            usernameElement.textContent = accounts[0].name || "User";
+
+    // Function to fetch and store user details
+    async function fetchUserDetails() {
+        try {
+            const response = await fetch("http://localhost:3000/auth/user", { credentials: "include" });
+
+            // Check if response is successful
+            if (!response.ok) {
+                throw new Error(`Failed to fetch user data: ${response.status}`);
+            }
+
+            const user = await response.json();
+
+            // If user is not authenticated, redirect to login (Only if not already there)
+            if (!user || user.error) {
+                console.warn("⚠️ User not authenticated.");
+                if (window.location.pathname !== "/pages/login.html") {
+                    console.log("🔀 Redirecting to login...");
+                    window.location.href = "/pages/login.html";
+                }
+                return;
+            }
+
+            console.log("✅ User authenticated:", user);
+
+            // Store user info in local storage
+            localStorage.setItem("user", JSON.stringify(user));
+
+            // Extract user details
+            const firstName = user.firstName || "Unknown First Name";
+            const lastName = user.lastName || "Unknown Last Name";
+            const email = user.email || "Unknown Email";
+
+            console.log(`👤 First Name: ${firstName}`);
+            console.log(`👤 Last Name: ${lastName}`);
+            console.log(`📧 Email: ${email}`);
+
+            // Display user info in the UI
+            const usernameElement = document.getElementById("username");
+            if (usernameElement) {
+                usernameElement.textContent = `${firstName} ${lastName}`;
+            }
+
+            // Redirect user to dashboard (Only if not already there)
+            if (window.location.pathname === "/pages/login.html") {
+                console.log("🔀 Redirecting to dashboard...");
+                window.location.href = "/pages/dashboard.html";
+            }
+
+        } catch (error) {
+            console.error("❌ Error fetching user details:", error);
+
+            // Redirect to login ONLY if NOT already on login page (Prevents infinite loop)
+            if (window.location.pathname !== "/pages/login.html") {
+                alert("⚠️ Error fetching user data. Redirecting to login.");
+                window.location.href = "/pages/login.html";
+            }
         }
     }
-    
-    displayLoggedInUser();
+
+    // Check if user is already logged in from local storage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+        console.log("🔄 User found in local storage:", JSON.parse(storedUser));
+    } else {
+        await fetchUserDetails(); // Fetch user details if not found in storage
+    }
 });

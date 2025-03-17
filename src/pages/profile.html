@@ -13,7 +13,7 @@
         <h1>👤 My Profile</h1>
         <ul>
             <li><a href="/pages/dashboard.html">Dashboard</a></li>
-            <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+            <li><button class="logout-btn" onclick="logout()">🚪 Logout</button></li>
         </ul>
     </nav>
 
@@ -22,15 +22,19 @@
         <div class="profile-card">
             <!-- Profile Picture -->
             <div class="profile-picture">
-                <img id="profile-img" src="../img/default-avatar.png" alt="Profile Picture">
+                <img id="profile-img" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile Picture">
             </div>
+
+            <!-- Change Profile Picture Button -->
             <input type="file" id="upload-profile-pic" accept="image/*" hidden>
             <button class="upload-btn" onclick="document.getElementById('upload-profile-pic').click()">📷 Change Profile Picture</button>
 
             <!-- User Info -->
-            <h2 id="profile-display-name">Display Name</h2>
-            <p class="profile-name"><strong>Name:</strong> <span id="profile-name"></span></p>
-            <p class="profile-role"><strong>Role:</strong> <span id="profile-role"></span></p>
+            <h2 id="profile-display-name">Loading...</h2> <!-- Editable Display Name -->
+            <p id="profile-first-name">Loading...</p>
+            <p id="profile-last-name">Loading...</p>
+            <p id="profile-email" class="profile-email">Loading...</p>
+
             <p class="profile-bio" id="profile-bio">No bio added.</p>
 
             <!-- Edit Profile Button -->
@@ -67,6 +71,7 @@
     </div>
 
     <script src="../js/profile.js"></script>
+    <script src="../js/auth.js"></script>
 
 </body>
 </html>

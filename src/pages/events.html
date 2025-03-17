@@ -10,7 +10,7 @@
 
     <!-- Navigation Bar -->
     <nav class="navbar">
-        <h1>NAHS Events</h1>
+        <h1>📅 NAHS Events</h1>
         <ul>
             <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="hours.html">Hours</a></li>
@@ -22,29 +22,47 @@
         </ul>
     </nav>
 
-    <!-- Events Page Content -->
-    <div class="events-container">
-        <h2>📅 Upcoming Events</h2>
-        
-        <!-- Current Date & Time Display -->
-        <h3 id="current-date-time"></h3>
+    <!-- Main Event Section -->
+    <div class="events-wrapper">
+        <!-- Event Calendar -->
+        <div class="events-container">
+            <h2>📆 Upcoming Events</h2>
+            <h3 id="current-date-time"></h3>
 
-        <!-- Calendar -->
-        <div class="calendar">
-            <div class="calendar-header">
-                <button onclick="prevMonth()">◀</button>
-                <h3 id="calendar-month"></h3>
-                <button onclick="nextMonth()">▶</button>
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button onclick="prevMonth()">◀</button>
+                    <h3 id="calendar-month"></h3>
+                    <button onclick="nextMonth()">▶</button>
+                </div>
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- Calendar days will be dynamically inserted -->
+                </div>
             </div>
-            <div class="calendar-grid" id="calendar-grid">
-                <!-- Days will be inserted dynamically -->
-            </div>
+
+            <h3>🗓 Event List</h3>
+            <ul id="event-list"></ul>
         </div>
 
-        <h3>🗓 Event List</h3>
-        <ul id="event-list">
-            <!-- Dynamic Events Here -->
-        </ul>
+        <!-- Admin Panel (Only visible to admins) -->
+        <div class="admin-panel" id="admin-panel">
+            <h3>🎯 Manage Events</h3>
+            <label for="event-title">📌 Event Title</label>
+            <input type="text" id="event-title" placeholder="Enter event title">
+
+            <label for="event-type">📍 Occasion</label>
+            <select id="event-type">
+                <option value="hours">⌛ Hours Opportunity</option>
+                <option value="officer">📢 Officer Meeting</option>
+                <option value="general">📋 General Meeting</option>
+                <option value="event">🎨 Event</option>
+            </select>
+
+            <label for="event-date">📅 Select Date</label>
+            <input type="date" id="event-date">
+
+            <button class="green-btn" onclick="addEvent()">✅ Add Event</button>
+        </div>
     </div>
 
     <script src="../js/events.js"></script>
